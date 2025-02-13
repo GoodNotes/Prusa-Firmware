@@ -6515,11 +6515,11 @@ void process_commands()
 
     #### Parameters
     - `S` - frequency in Hz. Not all firmware versions support this parameter
-    - `P` - duration in milliseconds
+    - `P` - duration in milliseconds max 3500ms
     */
     case 300: // M300
     {
-      uint16_t beepP = code_seen('P') ? code_value() : 1000;
+      uint16_t beepP = code_seen('P') ? min(code_value(), 3500) : 1000;
       uint16_t beepS;
       if (!code_seen('S'))
           beepS = 0;
