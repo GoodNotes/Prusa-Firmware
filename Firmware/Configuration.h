@@ -324,6 +324,10 @@ your extruder heater takes 2 minutes to hit the target on heating.
 #define SDSUPPORT
 #define LCD_WIDTH 20
 #define LCD_HEIGHT 4
+#define LCD_BACKLIGHT_LEVEL_HIGH 130
+#define LCD_BACKLIGHT_LEVEL_LOW 50
+#define LCD_BACKLIGHT_FORCE_ON 30
+#define LCD_BACKLIGHT_TIMEOUT 15
 
 
 // Increase the FAN pwm frequency. Removes the PWM noise but increases heating in the FET/Arduino
