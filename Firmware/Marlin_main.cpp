@@ -6661,17 +6661,10 @@ void process_commands()
      case 256:
     {
       if (backlightSupport) {
-        if (code_seen('B') ) backlightLevel_HIGH=code_value_uint8();
-        if (code_seen('D')) backlightLevel_LOW=code_value_uint8();
-        if (code_seen('S')) {
-          backlightMode=code_value_uint8();
-          if (backlightMode >2 ) backlightMode = 2;
-        }
-        if (code_seen('T')) {
-          backlightTimer_period=code_value_short();
-          if (backlightTimer_period < LCD_BACKLIGHT_TIMEOUT) backlightTimer_period = LCD_BACKLIGHT_TIMEOUT;
-          if (backlightTimer_period > LCD_BACKLIGHT_TIMEOUT*60) backlightTimer_period = LCD_BACKLIGHT_TIMEOUT*60;
-        }
+        if (code_seen('B') ) backlightLevel_HIGH = code_value_uint8();
+        if (code_seen('D')) backlightLevel_LOW = code_value_uint8();
+        if (code_seen('S')) backlightMode = max(static_cast<Backlight_Mode>(code_value_uint8()), BACKLIGHT_MODE_AUTO);
+        if (code_seen('T')) backlightTimer_period = constrain(code_value_short(), LCD_BACKLIGHT_TIMEOUT, LCD_BACKLIGHT_TIMEOUT*60);
         printf_P(PSTR("M256 B%d D%d S%d T%u\n"), backlightLevel_HIGH, backlightLevel_LOW, backlightMode, backlightTimer_period);
         backlight_save();
       }
