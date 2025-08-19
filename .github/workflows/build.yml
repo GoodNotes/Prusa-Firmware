@@ -8,6 +8,8 @@ on:
     branches: [ MK3, MK3_* ]
     tags:
     - 'v*'
+    - 't*'
+    - 'c*'
 
 env:
   GH_ANNOTATIONS: 1
@@ -69,10 +71,11 @@ jobs:
         path: build/*.hex
 
     - name: RELEASE THE KRAKEN
-      if: startsWith(github.ref, 'refs/tags/v')
+      if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/t') || startsWith(github.ref, 'refs/tags/c')
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: ${{ github.ref_name }}
         draft: true
         files: |
           ${{ github.workspace }}/build/release/*.hex
