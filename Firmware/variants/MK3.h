@@ -26,6 +26,15 @@
 //#define NEW_FIRST_LAYER_CAL //from front to back
 #define HAS_SECOND_SERIAL_PORT
 
+// Disable PINDA thermistor usage for the custom rig
+#undef PINDA_THERMISTOR
+
+// Skip heater safety checks since all heaters and thermistors are removed
+#define DEBUG_DISABLE_MINTEMP
+#define DEBUG_DISABLE_MAXTEMP
+#define DISABLE_Z_CRASH_PROTECTION
+#define DISABLE_Z_AUTO_ALIGNMENT
+
 
 // Uncomment the below for the E3D PT100 temperature sensor (with or without PT100 Amplifier)
 //#define E3D_PT100_EXTRUDER_WITH_AMP
@@ -188,7 +197,7 @@
 //#define DEBUG_DISABLE_ZMINLIMIT  //z min limit ignored
 //#define DEBUG_DISABLE_ZMAXLIMIT  //z max limit ignored
 #define DEBUG_DISABLE_STARTMSGS //no startup messages
-//#define DEBUG_DISABLE_MINTEMP   //mintemp error ignored
+#define DEBUG_DISABLE_MINTEMP   //mintemp error ignored
 //#define DEBUG_DISABLE_SWLIMITS  //sw limits ignored
 //#define DEBUG_DISABLE_LCD_STATUS_LINE  //empty four lcd line
 //#define DEBUG_DISABLE_PREVENT_EXTRUDER //cold extrusion and long extrusion allowed
@@ -301,12 +310,12 @@
  *------------------------------------*/
 
 // Mintemps
-#define HEATER_0_MINTEMP 10
+#define HEATER_0_MINTEMP 0
 #define HEATER_MINTEMP_DELAY 15000                // [ms] ! if changed, check maximal allowed value @ ShortTimer
 #if HEATER_MINTEMP_DELAY>USHRT_MAX
 #error "Check maximal allowed value @ ShortTimer (see HEATER_MINTEMP_DELAY definition)"
 #endif
-#define BED_MINTEMP 10
+#define BED_MINTEMP 0
 #define BED_MINTEMP_DELAY 50000                   // [ms] ! if changed, check maximal allowed value @ ShortTimer
 #if BED_MINTEMP_DELAY>USHRT_MAX
 #error "Check maximal allowed value @ ShortTimer (see BED_MINTEMP_DELAY definition)"
@@ -341,7 +350,7 @@
 #endif
 
 // Extrude mintemp
-#define EXTRUDE_MINTEMP 175
+#define EXTRUDE_MINTEMP 0
 
 // Quick nozzle change supported
 //#define QUICK_NOZZLE_CHANGE
@@ -598,6 +607,7 @@
 // 247 is Pt100 with 4k7 pullup and PT100 Amplifier
 // 110 is Pt100 with 1k pullup (non standard)
 
+// Retain default thermistor definitions but override safety checks elsewhere for the heater-less rig
 #if defined(E3D_PT100_EXTRUDER_WITH_AMP)
 #define TEMP_SENSOR_0 247
 #elif defined(E3D_PT100_EXTRUDER_NO_AMP)
@@ -612,7 +622,7 @@
 #else
 #define TEMP_SENSOR_BED 1
 #endif
-#define TEMP_SENSOR_PINDA 1
+#define TEMP_SENSOR_PINDA 0
 #define TEMP_SENSOR_AMBIENT 2000
 
 #define STACK_GUARD_TEST_VALUE 0xA2A2
