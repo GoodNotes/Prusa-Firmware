@@ -9,7 +9,7 @@ typedef enum : uint8_t {
     e_SOUND_MODE_BLIND
 } eSOUND_MODE;
 
-#define e_SOUND_MODE_DEFAULT e_SOUND_MODE_LOUD
+#define e_SOUND_MODE_DEFAULT e_SOUND_MODE_SILENT
 
 typedef enum : uint8_t {
     e_SOUND_TYPE_ButtonEcho,
