@@ -1,3 +1,21 @@
+# Ink Robot Firmware Fork Notes
+
+This is a custom fork of Prusa’s MK3 firmware used by the Ink Robot project.
+
+Important: this firmware is intended for a Prusa MK3 chassis that has been repurposed as a motion platform (heaters/thermistors/probe removed). Do **not** flash this onto a normal printer without understanding the safety implications.
+
+## What’s Different From Stock
+
+- Thermistor safety checks relaxed/disabled so the printer can boot and run without hotend/bed sensors (removes common `MINTEMP` faults on the stripped rig).
+- Default sound mode set to silent to keep the rig quiet.
+- Z homing direction flipped (homes upward) and related crash-protection logic adjusted so intentional Z stall homing does not kill the machine.
+- Auto Z alignment / mesh probing routines disabled for the rig (no bed/probe).
+- PINDA/probe support disabled/removed.
+
+More context: https://github.com/GoodNotes/ink-robot/blob/main/docs/prusa-firmware-customizations.md
+
+---
+
 # Prusa Firmware MK3
 
 This repository contains the source code and the development versions of the firmware running on the [Original Prusa i3](https://prusa3d.com/) MK3S/MK3/MK2.5S/MK2.5 line of printers.
