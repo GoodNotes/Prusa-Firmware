@@ -2002,6 +2002,7 @@ void raise_z_above(float target)
 
 
 #ifdef TMC2130
+#ifndef DISABLE_Z_AUTO_ALIGNMENT
 bool calibrate_z_auto()
 {
 	//lcd_display_message_fullscreen_P(_T(MSG_CALIBRATE_Z_AUTO));
@@ -2033,11 +2034,21 @@ bool calibrate_z_auto()
 	plan_set_position_curposXYZE();
 	return true;
 }
+#else
+bool calibrate_z_auto()
+{
+	// On this custom rig there is no probe, so skip the alignment logic.
+	return true;
+}
+#endif // DISABLE_Z_AUTO_ALIGNMENT
 #endif //TMC2130
 
 #ifdef TMC2130
 void check_Z_crash(void)
 {
+#ifdef DISABLE_Z_CRASH_PROTECTION
+    return;
+#endif
 	if (!READ(Z_TMC2130_DIAG)) { //Z crash
 		FORCE_HIGH_POWER_END;
 		current_position[Z_AXIS] = 0;
@@ -2592,6 +2603,12 @@ static void gcode_G80()
 
     mesh_bed_leveling_flag = true;
 
+#ifdef DISABLE_Z_AUTO_ALIGNMENT
+    // On this custom rig we do not run the probing routine.
+    lcd_update_enable(true);
+    return;
+#endif
+
     // Firstly check if we know where we are
     if (!(axis_known_position[X_AXIS] && axis_known_position[Y_AXIS] && axis_known_position[Z_AXIS])) {
         // We don't know where we are! HOME!
@@ -2688,6 +2705,10 @@ static void gcode_G80()
     int l_feedmultiply = setup_for_endstop_move(false); //save feedrate and feedmultiply, sets feedmultiply to 100
     uint8_t mesh_point = 0; //index number of calibration point
     while (mesh_point != MESH_NUM_X_POINTS * MESH_NUM_Y_POINTS) {
+#ifdef DISABLE_Z_AUTO_ALIGNMENT
+        mesh_point = MESH_NUM_X_POINTS * MESH_NUM_Y_POINTS;
+        break;
+#endif
         // Get coords of a measuring point.
         uint8_t ix = mesh_point % MESH_NUM_X_POINTS; // from 0 to MESH_NUM_X_POINTS - 1
         uint8_t iy = mesh_point / MESH_NUM_X_POINTS;
@@ -2783,7 +2804,9 @@ static void gcode_G80()
             lcd_display_message_fullscreen_P(_T(MSG_ZLEVELING_ENFORCED));
 #ifdef TMC2130
             lcd_wait_for_click_delay(MSG_BED_LEVELING_FAILED_TIMEOUT);
+#ifndef DISABLE_Z_AUTO_ALIGNMENT
             calibrate_z_auto();           // Z-leveling (X-assembly stay up!!!)
+#endif
 #else // TMC2130
             lcd_wait_for_click_delay(0);  // ~ no timeout
             lcd_calibrate_z_end_stop_manual(true); // Z-leveling (X-assembly stay up!!!)
@@ -2792,15 +2815,15 @@ static void gcode_G80()
             bState=enable_z_endstop(false);
             raise_z(-1);
             enable_z_endstop(true);
-#ifdef TMC2130
+#if defined(TMC2130) && !defined(DISABLE_Z_AUTO_ALIGNMENT)
             tmc2130_home_enter(Z_AXIS_MASK);
-#endif // TMC2130
+#endif
             current_position[Z_AXIS] = MESH_HOME_Z_SEARCH;
             plan_buffer_line_curposXYZE(Z_LIFT_FEEDRATE);
             st_synchronize();
-#ifdef TMC2130
+#if defined(TMC2130) && !defined(DISABLE_Z_AUTO_ALIGNMENT)
             tmc2130_home_exit();
-#endif // TMC2130
+#endif
             enable_z_endstop(bState);
         } while (st_get_position_mm(Z_AXIS) > MESH_HOME_Z_SEARCH); // i.e. Z-leveling not o.k.
 
